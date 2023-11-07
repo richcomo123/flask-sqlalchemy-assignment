@@ -1,10 +1,15 @@
 from flask import Flask, abort, redirect, render_template, request
+from src.models import db
 
 from src.repositories.movie_repository import movie_repository_singleton
 
 app = Flask(__name__)
 
 # TODO: DB connection
+# TODO: DB connection
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:@localhost:5432/postgres'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
 
 @app.get('/')
 def index():
@@ -46,3 +51,27 @@ def search_movies():
     if q != '':
         found_movies = movie_repository_singleton.search_movies(q)
     return render_template('search_movies.html', search_active=True, movies=found_movies, search_query=q)
+
+if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
